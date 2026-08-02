@@ -120,8 +120,8 @@ relation manager always means *ratings received*.
 ## Related packages
 
 - [ghanem/rating](https://github.com/AbdullahGhanem/rating) — the rating engine this package renders; traits, aggregates, query scopes, events and validation
-- [ghanem/friendship](https://github.com/AbdullahGhanem/friendship) — friendships, requests and blocks for Eloquent models
-- [ghanem/friendship-filament](https://github.com/AbdullahGhanem/friendship-filament) — Filament admin panel for `ghanem/friendship`
+- [ghanem/friendship](https://github.com/gaitco/friendship) — friendships, requests and blocks for Eloquent models
+- [ghanem/friendship-filament](https://github.com/gaitco/friendship-filament) — Filament admin panel for `ghanem/friendship`
 
 ## Sponsor
 

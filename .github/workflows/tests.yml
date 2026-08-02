@@ -14,9 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # testbench ^9 (Laravel 11) is deliberately absent: every tagged 11.x
-          # release is blocked by security advisories, so it cannot resolve under
-          # "minimum-stability": "stable". Filament 4 is covered on Laravel 12.
+          - { php: '8.2', filament: '^4.0', testbench: '^9.0' }
           - { php: '8.2', filament: '^4.0', testbench: '^10.0' }
           - { php: '8.3', filament: '^4.0', testbench: '^10.0' }
           - { php: '8.3', filament: '^5.0', testbench: '^11.0' }
@@ -36,7 +34,14 @@ jobs:
 
       - name: Install dependencies
         run: |
+          # The local path repository points at ../rating, which does not exist
+          # on a runner, so ghanem/rating must resolve from Packagist here.
           composer config --unset repositories
+          # Laravel 11 is past its security-support window, so every published
+          # release is flagged by Composer's advisory-block policy and none can
+          # be selected. This package still targets it, so allow already-published
+          # releases through; it does not affect what actually ships.
+          composer config policy.advisories.block false --no-interaction
           composer require "filament/filament:${{ matrix.filament }}" --no-interaction --no-update
           composer require --dev "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
           composer update --prefer-dist --prefer-stable --no-interaction
