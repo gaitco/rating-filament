@@ -1,0 +1,53 @@
+{
+    "name": "ghanem/rating-filament",
+    "description": "Filament 4 & 5 components for the ghanem/rating package — star input, sortable average-rating column, infolist entry and review moderation.",
+    "keywords": ["laravel", "filament", "rating", "stars", "review", "admin"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "abdullah ghanem",
+            "email": "3bdullah.ghanem@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "ghanem/rating": "^2.1",
+        "filament/filament": "^4.0|^5.0",
+        "illuminate/support": "^11.0|^12.0|^13.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^9.0|^10.0|^11.0",
+        "pestphp/pest": "^2.34|^3.0"
+    },
+    "repositories": [
+        { "type": "path", "url": "../rating", "options": { "symlink": true, "versions": { "ghanem/rating": "2.1.0" } } }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Ghanem\\RatingFilament\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Ghanem\\RatingFilament\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Ghanem\\RatingFilament\\RatingFilamentServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/pest"
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
