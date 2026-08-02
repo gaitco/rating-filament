@@ -1,11 +1,33 @@
+<p align="center">
+  <a href="https://packagist.org/packages/ghanem/rating-filament"><img src="https://poser.pugx.org/ghanem/rating-filament/v/stable.svg" alt="Latest Stable Version"></a>
+  <a href="https://packagist.org/packages/ghanem/rating-filament"><img src="https://poser.pugx.org/ghanem/rating-filament/license.svg" alt="License"></a>
+  <a href="https://github.com/AbdullahGhanem/rating-filament/actions"><img src="https://github.com/AbdullahGhanem/rating-filament/actions/workflows/tests.yml/badge.svg" alt="Tests"></a>
+</p>
+
 # Laravel Rating for Filament
 
-Filament 4 & 5 components for [`ghanem/rating`](https://github.com/AbdullahGhanem/rating).
+Filament 4 & 5 components for [**ghanem/rating**](https://github.com/AbdullahGhanem/rating)
+([Packagist](https://packagist.org/packages/ghanem/rating)) — a star input field, a
+sortable average-rating table column, an infolist entry, and a relation manager for
+moderating reviews.
+
+This package is admin-panel only. Ratings themselves — the traits, aggregates, scopes,
+events and validation — live in
+[`ghanem/rating`](https://github.com/AbdullahGhanem/rating), which is required
+automatically. Read its README first if you have not set up the `Ratingable` and
+`CanRate` traits yet.
 
 ## Installation
 
 ```bash
 composer require ghanem/rating-filament
+```
+
+This pulls in `ghanem/rating` `^2.1`. If you have not already published its migration:
+
+```bash
+php artisan vendor:publish --provider="Ghanem\Rating\RatingServiceProvider"
+php artisan migrate
 ```
 
 ## Table column
@@ -94,3 +116,13 @@ php artisan vendor:publish --tag=rating-filament-views
 `Ratingable::ratings()` and `CanRate::ratings()` share a method name, so a model
 cannot use both traits without resolving the collision with `insteadof`. This
 relation manager always means *ratings received*.
+
+## Related packages
+
+- [ghanem/rating](https://github.com/AbdullahGhanem/rating) — the rating engine this package renders; traits, aggregates, query scopes, events and validation
+- [ghanem/friendship](https://github.com/AbdullahGhanem/friendship) — friendships, requests and blocks for Eloquent models
+- [ghanem/friendship-filament](https://github.com/AbdullahGhanem/friendship-filament) — Filament admin panel for `ghanem/friendship`
+
+## Sponsor
+
+[Become a Sponsor](https://github.com/sponsors/AbdullahGhanem)
