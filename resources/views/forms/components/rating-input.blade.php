@@ -27,30 +27,39 @@
 
                 this.state = (this.clearable && this.state === value) ? null : value
             },
-            filled(index) {
-                const current = this.hover ?? this.state ?? 0
+            fill(index) {
+                const c = this.hover ?? this.state ?? 0
 
-                return current >= index - 0.25
+                return Math.max(0, Math.min(1, c - index + 1)) * 100
             },
         }"
         @mouseleave="hover = null"
         role="radiogroup"
         aria-label="{{ $getLabel() }}"
-        style="display: inline-flex; gap: 0.125rem;"
+        style="display: inline-flex; align-items: center; gap: 0.5rem;"
     >
-        <template x-for="index in max" :key="index">
-            <button
-                type="button"
-                role="radio"
-                :aria-checked="state === index"
-                :aria-label="index + ' of ' + max"
-                @click="select(index, $event)"
-                @mousemove="hover = valueFor(index, $event)"
-                @keydown.arrow-right.prevent="state = Math.min(max, (state ?? 0) + (half ? 0.5 : 1))"
-                @keydown.arrow-left.prevent="state = Math.max(0, (state ?? 0) - (half ? 0.5 : 1))"
-                style="background: none; border: 0; padding: 0 1px; cursor: pointer; font-size: 1.5rem; line-height: 1;"
-                :style="filled(index) ? 'color: {{ $color }}' : 'color: #d1d5db'"
-            >★</button>
-        </template>
+        <div style="display: inline-flex; gap: 0.125rem;">
+            <template x-for="index in max" :key="index">
+                <button
+                    type="button"
+                    role="radio"
+                    :aria-checked="state === index"
+                    :aria-label="index + ' of ' + max"
+                    @click="select(index, $event)"
+                    @mousemove="hover = valueFor(index, $event)"
+                    @keydown.arrow-right.prevent="state = Math.min(max, (state ?? 0) + (half ? 0.5 : 1))"
+                    @keydown.arrow-left.prevent="state = Math.max(0, (state ?? 0) - (half ? 0.5 : 1))"
+                    style="position: relative; display: inline-block; background: none; border: 0; padding: 0 1px; cursor: pointer; font-size: 1.5rem; line-height: 1; color: #d1d5db;"
+                >★<span
+                        aria-hidden="true"
+                        style="position: absolute; top: 0; left: 1px; overflow: hidden; color: {{ $color }};"
+                        :style="'width: ' + fill(index) + '%'"
+                    >★</span></button>
+            </template>
+        </div>
+
+        @if ($getShowValue())
+            <span x-text="(state ?? 0).toFixed(1)"></span>
+        @endif
     </div>
 </x-dynamic-component>

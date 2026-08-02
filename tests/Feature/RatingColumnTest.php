@@ -92,3 +92,56 @@ it('sorts by its own column instead of throwing when the model has no orderByAvg
 
     expect($query->pluck('rating')->all())->toBe([1.0, 3.0, 5.0]);
 });
+
+it('renders a dash instead of calling a Ratingable-only method when the record has no eager-loaded count', function () {
+    $user = User::create(['name' => 'U']);
+    $post = Post::create(['title' => 'A']);
+    $rating = $post->rating(['rating' => 4], $user);
+
+    // Rating (unlike Post) does not use the Ratingable trait, so it has no
+    // countRatings() method. If the column's view ever falls back to calling
+    // it, this record proves the bug: it would throw BadMethodCallException.
+    expect(method_exists($rating, 'countRatings'))->toBeFalse();
+
+    $html = view('rating-filament::tables.columns.rating-column', [
+        'getState' => fn () => 4.0,
+        'getStars' => fn () => 5,
+        'getStarColor' => fn () => '#f59e0b',
+        'getShowValue' => fn () => false,
+        'getShowCount' => fn () => true,
+        'record' => $rating,
+    ])->render();
+
+    expect($html)->toContain('(—)');
+});
+
+it('renders the eager-loaded count when present, without touching the model', function () {
+    $post = Post::create(['title' => 'A']);
+    $post->setAttribute('ratings_count', 3);
+
+    $html = view('rating-filament::tables.columns.rating-column', [
+        'getState' => fn () => 4.0,
+        'getStars' => fn () => 5,
+        'getStarColor' => fn () => '#f59e0b',
+        'getShowValue' => fn () => false,
+        'getShowCount' => fn () => true,
+        'record' => $post,
+    ])->render();
+
+    expect($html)->toContain('(3)');
+});
+
+it('renders the configured number of stars', function () {
+    $post = Post::create(['title' => 'A']);
+
+    $html = view('rating-filament::tables.columns.rating-column', [
+        'getState' => fn () => 2.0,
+        'getStars' => fn () => 5,
+        'getStarColor' => fn () => '#f59e0b',
+        'getShowValue' => fn () => false,
+        'getShowCount' => fn () => false,
+        'record' => $post,
+    ])->render();
+
+    expect(substr_count($html, '★'))->toBe(10); // 5 base + 5 clipped overlay glyphs
+});

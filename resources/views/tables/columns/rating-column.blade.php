@@ -10,6 +10,6 @@
     @endif
 
     @if ($getShowCount())
-        <span style="opacity: 0.6;">({{ $record->ratings_count ?? $record->countRatings() }})</span>
+        <span style="opacity: 0.6;">({{ $record->ratings_count ?? '—' }})</span>
     @endif
 </div>

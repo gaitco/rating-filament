@@ -1,6 +1,7 @@
 <?php
 
 use Ghanem\RatingFilament\Infolists\Components\RatingEntry;
+use Livewire\Livewire;
 
 it('defaults to five stars', function () {
     expect(RatingEntry::make('rating')->getStars())->toBe(5);
@@ -51,4 +52,12 @@ it('never clips beyond the full width', function () {
     ])->render();
 
     expect($html)->toContain('width: 100%');
+});
+
+it('renders the entry view with the clipped stars and the numeric value', function () {
+    $html = Livewire::test(Ghanem\RatingFilament\Tests\Fixtures\InfolistComponent::class)->html();
+
+    expect($html)->toContain('width: 70%')
+        ->and($html)->toContain('3.5')
+        ->and(substr_count($html, '★'))->toBe(10);
 });
