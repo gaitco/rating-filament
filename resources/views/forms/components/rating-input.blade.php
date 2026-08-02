@@ -53,13 +53,13 @@
                 >★<span
                         aria-hidden="true"
                         style="position: absolute; top: 0; left: 1px; overflow: hidden; color: {{ $color }};"
-                        :style="'width: ' + fill(index) + '%'"
+                        :style="{ width: fill(index) + '%' }"
                     >★</span></button>
             </template>
         </div>
 
         @if ($getShowValue())
-            <span x-text="(state ?? 0).toFixed(1)"></span>
+            <span x-text="Number(state ?? 0).toFixed(1)"></span>
         @endif
     </div>
 </x-dynamic-component>

@@ -71,8 +71,32 @@ it('renders the two-layer clip markup driven by fill(), not the old filled() pre
         ->and($html)->toContain("entangle('data.rating')");
 });
 
-it('renders the numeric value span when showValue() is enabled', function () {
+it('renders the numeric value span coercing state to a number before toFixed', function () {
     $html = Livewire::test(Ghanem\RatingFilament\Tests\Fixtures\FormComponent::class)->html();
 
-    expect($html)->toContain('x-text="(state ?? 0).toFixed(1)"');
+    // Guards the latent crash: if Livewire hydrates `state` as a string
+    // (e.g. a consuming app's model casts the rating column to `decimal:`
+    // instead of `float`), `(state ?? 0).toFixed(1)` throws because
+    // .toFixed doesn't exist on strings. Number(...) coerces first.
+    expect($html)->toContain('x-text="Number(state ?? 0).toFixed(1)"')
+        ->and($html)->not->toContain('x-text="(state ?? 0).toFixed(1)"');
+});
+
+it('keeps the overlay span\'s static clip styles alongside an object-form :style binding', function () {
+    $html = Livewire::test(Ghanem\RatingFilament\Tests\Fixtures\FormComponent::class)->html();
+
+    // Alpine's string form of :style (`:style="'width: ' + fill(index) + '%'"`)
+    // calls el.setAttribute('style', ...) on init, which REPLACES the whole
+    // attribute — wiping the static position/overflow/color styles the
+    // overlay depends on for its clip to work, and leaving a second grey
+    // star rendered in normal flow. The object form (`:style="{ width: ... }"`)
+    // merges via el.style.setProperty instead, preserving the static styles.
+    // A regression back to the string form would still contain "fill(" (the
+    // math is unchanged) but the static styles below and the object-form
+    // literal would be gone from the overlay span's opening tag.
+    expect($html)->toContain(
+        'style="position: absolute; top: 0; left: 1px; overflow: hidden; color: #f59e0b;"'
+        . "\n                        "
+        . ':style="{ width: fill(index) + \'%\' }"'
+    )->and($html)->not->toContain(":style=\"'width: '");
 });
