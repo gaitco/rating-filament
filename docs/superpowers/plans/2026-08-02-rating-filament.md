@@ -1339,7 +1339,7 @@ jobs:
 ````markdown
 # Laravel Rating for Filament
 
-Filament 4 & 5 components for [`ghanem/rating`](https://github.com/AbdullahGhanem/rating).
+Filament 4 & 5 components for [`ghanem/rating`](https://github.com/gaitco/rating).
 
 ## Installation
 
