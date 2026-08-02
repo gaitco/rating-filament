@@ -72,9 +72,9 @@ The star count defaults to `config('rating.max')`, and the field attaches
 `min`/`max` validation rules from the same config so an out-of-range value
 produces a field error instead of an `InvalidRatingException`.
 
-`allowHalf()` lets the field store half-point values (`2.5`, `3.5`, ...); it
-does not change the rendering. The widget currently fills whole stars only, so
-a stored `2.5` looks identical to `2.0` until half-star rendering is added.
+`allowHalf()` lets the field store and render half-point values (`2.5`, `3.5`,
+...). Clicking the left half of a star selects the half value, and the star is
+drawn half-filled to match.
 
 ## Infolist entry
 
