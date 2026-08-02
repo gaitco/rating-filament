@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.0.0] - unreleased
+## [1.0.0] - 2026-08-02
 
 ### Added
 - `RatingInput` form field with config-derived validation bounds
