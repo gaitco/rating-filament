@@ -29,8 +29,16 @@ class RatingColumn extends Column
         parent::setUp();
 
         // Safety net: stays correct even if a resource forgets withAvgRating().
+        // orderByAvgRating() is a local scope on Ratingable models (e.g. Post),
+        // but this column is also used directly on Rating records (e.g. in
+        // RatingsRelationManager), whose builder has no such scope — fall back
+        // to ordering by the column's own name there.
         $this->sortable(
-            query: fn (Builder $query, string $direction): Builder => $query->orderByAvgRating($direction),
+            query: function (Builder $query, string $direction): Builder {
+                return $query->getModel()->hasNamedScope('orderByAvgRating')
+                    ? $query->orderByAvgRating($direction)
+                    : $query->orderBy($this->getName(), $direction);
+            },
         );
     }
 

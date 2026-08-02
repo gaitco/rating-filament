@@ -1,5 +1,6 @@
 <?php
 
+use Ghanem\Rating\Models\Rating;
 use Ghanem\RatingFilament\Tables\Columns\RatingColumn;
 use Ghanem\RatingFilament\Tests\Models\Post;
 use Ghanem\RatingFilament\Tests\Models\User;
@@ -74,4 +75,20 @@ it('documents the N+1 trap this column avoids', function () {
     // The accessor costs one query per row — this is why the column binds to
     // the alias instead.
     expect($queries)->toBe(10);
+});
+
+it('sorts by its own column instead of throwing when the model has no orderByAvgRating scope', function () {
+    $user = User::create(['name' => 'U']);
+    $post = Post::create(['title' => 'A']);
+
+    $post->rating(['rating' => 3], $user);
+    $post->rating(['rating' => 5], $user);
+    $post->rating(['rating' => 1], $user);
+
+    // Rating's own builder has no orderByAvgRating scope — this is the
+    // RatingsRelationManager case, where the column lists Rating records
+    // directly rather than an aggregated parent.
+    $query = RatingColumn::make('rating')->applySort(Rating::query(), 'asc');
+
+    expect($query->pluck('rating')->all())->toBe([1.0, 3.0, 5.0]);
 });

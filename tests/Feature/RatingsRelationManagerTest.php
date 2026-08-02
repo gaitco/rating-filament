@@ -1,5 +1,7 @@
 <?php
 
+use Filament\Schemas\Schema;
+use Filament\Tables\Table;
 use Ghanem\RatingFilament\Resources\RelationManagers\RatingsRelationManager;
 use Ghanem\RatingFilament\Tests\Models\Post;
 use Ghanem\RatingFilament\Tests\Models\User;
@@ -25,4 +27,17 @@ it('scopes to the ratings a record received', function () {
 
     expect($mine->ratings()->count())->toBe(1)
         ->and($mine->ratings()->first()->body)->toBe('great');
+});
+
+it('builds a form and table without throwing', function () {
+    $manager = new class extends RatingsRelationManager {};
+
+    // Column::make()/Field::make() both run setUp() eagerly, so this exercises
+    // the RatingInput and RatingColumn wiring (rules, sort closure) — not just
+    // that form()/table() are syntactically valid.
+    $schema = $manager->form(Schema::make());
+    expect($schema)->toBeInstanceOf(Schema::class);
+
+    $table = $manager->table(Table::make($manager));
+    expect($table)->toBeInstanceOf(Table::class);
 });
