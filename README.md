@@ -1,3 +1,5 @@
+<p align="center"><img src="art/banner.png" alt="Rating for Filament — Star input, sortable average column and review moderation for Filament panels." width="100%"></p>
+
 <p align="center">
   <a href="https://packagist.org/packages/ghanem/rating-filament"><img src="https://poser.pugx.org/ghanem/rating-filament/v/stable.svg" alt="Latest Stable Version"></a>
   <a href="https://packagist.org/packages/ghanem/rating-filament"><img src="https://poser.pugx.org/ghanem/rating-filament/license.svg" alt="License"></a>
