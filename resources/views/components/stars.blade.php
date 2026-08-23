@@ -6,14 +6,18 @@
 
 <span
     role="img"
-    aria-label="{{ number_format((float) $value, 1) }} out of {{ $max }}"
-    style="position: relative; display: inline-block; white-space: nowrap; color: #d1d5db; letter-spacing: 1px;"
+    class="gr-stars"
+    style="--gr-star-filled: {{ $starColor }}"
+    aria-label="{{ __('rating-filament::rating-filament.stars.aria_label', [
+        'value' => \Illuminate\Support\Number::format((float) $value, precision: 1),
+        'max' => $max,
+    ]) }}"
 >
     {{ $glyphs }}
 
     <span
         aria-hidden="true"
-        style="position: absolute; top: 0; left: 0; width: {{ $percent }}%; overflow: hidden; color: {{ $starColor }}; letter-spacing: 1px;"
+        class="gr-stars__fill"
+        style="width: {{ $percent }}%"
     >{{ $glyphs }}</span>
 </span>
-

@@ -23,7 +23,12 @@ automatically. Read its README first if you have not set up the `Ratingable` and
 
 ```bash
 composer require ghanem/rating-filament
+php artisan filament:assets
 ```
+
+> `filament:assets` publishes the star stylesheet into `public/`. **Re-run it after
+> every upgrade of this package** — Filament plugins are not compiled by your app's
+> Tailwind build, so without it the stars render unstyled.
 
 This pulls in `ghanem/rating` `^2.1`. If you have not already published its migration:
 
@@ -112,6 +117,39 @@ an admin-created rating is application-specific.
 ```bash
 php artisan vendor:publish --tag=rating-filament-views
 ```
+
+## Dark mode
+
+The components ship their own stylesheet and follow the panel's theme — filled
+stars keep their colour, empty stars darken from `gray-300` to `gray-600` under
+Filament's `dark` class. Nothing to configure.
+
+`starColor()` still takes any CSS colour and is applied through a custom
+property, so it composes with the theme rather than fighting it:
+
+```php
+RatingColumn::make()->starColor('#ef4444')
+RatingInput::make('rating')->starColor(fn () => auth()->user()->accent_colour)
+```
+
+Both layouts use CSS logical properties, so under `dir="rtl"` the stars fill
+from the right edge and half-star selection follows the pointer correctly.
+
+## Translations
+
+English and Arabic ship in the box. Every label, helper text and screen-reader
+string resolves through Laravel's translator, so a locale you add is picked up
+automatically.
+
+To adjust the bundled strings or add a locale:
+
+```bash
+php artisan vendor:publish --tag=rating-filament-translations
+```
+
+That writes to `lang/vendor/rating-filament/{locale}/rating-filament.php`.
+Translations are welcome as pull requests — copy `resources/lang/en` and keep
+the key set identical; a test enforces that every locale stays in step.
 
 ## Known limitation
 

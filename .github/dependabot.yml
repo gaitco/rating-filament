@@ -1,0 +1,10 @@
+version: 2
+
+updates:
+  # Keeps the SHA pins in the workflows current — a pinned action that is never
+  # updated is a stale action, so the two only work as a pair.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5

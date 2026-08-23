@@ -82,21 +82,29 @@ it('renders the numeric value span coercing state to a number before toFixed', f
         ->and($html)->not->toContain('x-text="(state ?? 0).toFixed(1)"');
 });
 
-it('keeps the overlay span\'s static clip styles alongside an object-form :style binding', function () {
+it('clips the overlay through the stylesheet class and an object-form :style binding', function () {
     $html = Livewire::test(Ghanem\RatingFilament\Tests\Fixtures\FormComponent::class)->html();
 
-    // Alpine's string form of :style (`:style="'width: ' + fill(index) + '%'"`)
-    // calls el.setAttribute('style', ...) on init, which REPLACES the whole
-    // attribute — wiping the static position/overflow/color styles the
-    // overlay depends on for its clip to work, and leaving a second grey
-    // star rendered in normal flow. The object form (`:style="{ width: ... }"`)
-    // merges via el.style.setProperty instead, preserving the static styles.
-    // A regression back to the string form would still contain "fill(" (the
-    // math is unchanged) but the static styles below and the object-form
-    // literal would be gone from the overlay span's opening tag.
-    expect($html)->toContain(
-        'style="position: absolute; top: 0; left: 1px; overflow: hidden; color: #f59e0b;"'
-        . "\n                        "
-        . ':style="{ width: fill(index) + \'%\' }"'
-    )->and($html)->not->toContain(":style=\"'width: '");
+    // The clip (position/overflow/inset-inline-start/colour) now lives in
+    // resources/dist/rating-filament.css so it can respond to dark mode and
+    // RTL, which an inline style attribute cannot do. Two things must hold:
+    //
+    // 1. The class is present — without it the overlay loses its clip and
+    //    renders as a second star in normal flow.
+    // 2. :style stays in object form. Alpine's string form calls
+    //    el.setAttribute('style', ...), replacing the whole attribute; the
+    //    object form merges via el.style.setProperty. The parent still carries
+    //    an inline --gr-star-filled custom property, so the distinction keeps
+    //    mattering as soon as anything static lands on the overlay again.
+    expect($html)->toContain('class="gr-rating-input__fill"')
+        ->and($html)->toContain(':style="{ width: fill(index) + \'%\' }"')
+        ->and($html)->not->toContain(":style=\"'width: '");
+});
+
+it('carries the star colour as a custom property the stylesheet consumes', function () {
+    $html = Livewire::test(Ghanem\RatingFilament\Tests\Fixtures\FormComponent::class)->html();
+
+    // BC guard for the inline-style removal: ->starColor() must keep working.
+    // It now overrides a variable instead of a declaration.
+    expect($html)->toContain('style="--gr-star-filled: #f59e0b"');
 });

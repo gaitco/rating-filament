@@ -1,0 +1,99 @@
+/*
+ * ghanem/rating-filament
+ *
+ * Filament ships a precompiled stylesheet and does not scan plugin Blade files,
+ * so utility classes written here would not exist at runtime. This file is the
+ * plugin's own CSS, registered via FilamentAsset in the service provider.
+ *
+ * Theming goes through custom properties so `->starColor()` can override the
+ * filled colour with a single inline declaration, and so dark mode only has to
+ * re-point the one value that actually changes.
+ *
+ * Positioning uses logical properties (inset-inline-start) rather than `left`
+ * so the fill overlay grows from the correct edge under dir="rtl".
+ */
+
+.gr-stars,
+.gr-rating-input {
+    --gr-star-filled: #f59e0b; /* amber-500 */
+    --gr-star-empty: #d1d5db; /* gray-300 */
+}
+
+.dark .gr-stars,
+.dark .gr-rating-input {
+    --gr-star-empty: #4b5563; /* gray-600 */
+}
+
+/* Read-only stars (infolist entry, table column) */
+
+.gr-stars {
+    position: relative;
+    display: inline-block;
+    white-space: nowrap;
+    color: var(--gr-star-empty);
+    letter-spacing: 1px;
+}
+
+.gr-stars__fill {
+    position: absolute;
+    top: 0;
+    inset-inline-start: 0;
+    overflow: hidden;
+    color: var(--gr-star-filled);
+    letter-spacing: 1px;
+}
+
+/* Shared layout for the star row plus its optional value/count labels */
+
+.gr-rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.gr-rating--column {
+    padding: 0.5rem 0.75rem;
+}
+
+.gr-rating__count {
+    opacity: 0.6;
+}
+
+/* Interactive input */
+
+.gr-rating-input {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.gr-rating-input__stars {
+    display: inline-flex;
+    gap: 0.125rem;
+}
+
+.gr-rating-input__star {
+    position: relative;
+    display: inline-block;
+    padding: 0 1px;
+    border: 0;
+    background: none;
+    color: var(--gr-star-empty);
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.gr-rating-input__star:focus-visible {
+    outline: 2px solid var(--gr-star-filled);
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
+.gr-rating-input__fill {
+    position: absolute;
+    top: 0;
+    inset-inline-start: 1px;
+    overflow: hidden;
+    color: var(--gr-star-filled);
+}

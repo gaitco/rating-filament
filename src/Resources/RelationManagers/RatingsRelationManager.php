@@ -12,6 +12,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Ghanem\RatingFilament\Forms\Components\RatingInput;
 use Ghanem\RatingFilament\Tables\Columns\RatingColumn;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * Moderates the ratings a record has *received*.
@@ -24,15 +25,28 @@ abstract class RatingsRelationManager extends RelationManager
 {
     protected static string $relationship = 'ratings';
 
-    protected static ?string $title = 'Ratings';
+    /**
+     * Deliberately a method, not the `$title` property: a property initialiser
+     * cannot call __(), so a static $title would be frozen in English.
+     */
+    public static function getTitle(Model $ownerRecord, string $pageClass): string
+    {
+        return __('rating-filament::rating-filament.relation_manager.title');
+    }
 
     public function form(Schema $schema): Schema
     {
         return $schema->components([
             RatingInput::make('rating')->required(),
-            Textarea::make('body')->label('Review')->rows(4),
-            TextInput::make('type')->helperText('Optional aspect, e.g. "food"'),
-            TextInput::make('weight')->numeric(),
+            Textarea::make('body')
+                ->label(__('rating-filament::rating-filament.fields.review'))
+                ->rows(4),
+            TextInput::make('type')
+                ->label(__('rating-filament::rating-filament.fields.type'))
+                ->helperText(__('rating-filament::rating-filament.fields.type_helper')),
+            TextInput::make('weight')
+                ->label(__('rating-filament::rating-filament.fields.weight'))
+                ->numeric(),
         ]);
     }
 
@@ -41,10 +55,18 @@ abstract class RatingsRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('rating')
             ->columns([
-                TextColumn::make('author_id')->label('Author')->sortable(),
+                TextColumn::make('author_id')
+                    ->label(__('rating-filament::rating-filament.fields.author'))
+                    ->sortable(),
                 RatingColumn::make('rating')->showValue(),
-                TextColumn::make('body')->label('Review')->limit(60)->wrap(),
-                TextColumn::make('type')->badge()->placeholder('—'),
+                TextColumn::make('body')
+                    ->label(__('rating-filament::rating-filament.fields.review'))
+                    ->limit(60)
+                    ->wrap(),
+                TextColumn::make('type')
+                    ->label(__('rating-filament::rating-filament.fields.type'))
+                    ->badge()
+                    ->placeholder('—'),
                 TextColumn::make('created_at')->dateTime()->sortable(),
             ])
             ->defaultSort('created_at', 'desc')
